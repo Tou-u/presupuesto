@@ -1,0 +1,20 @@
+-- CreateTable
+CREATE TABLE "Budget" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "amount" INTEGER NOT NULL,
+    "taken" INTEGER NOT NULL,
+    "date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+    CONSTRAINT "Budget_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Spent" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "category" TEXT NOT NULL,
+    "date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "budgetId" TEXT NOT NULL,
+    CONSTRAINT "Spent_budgetId_fkey" FOREIGN KEY ("budgetId") REFERENCES "Budget" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
