@@ -22,6 +22,7 @@ const Header: NextComponentType<NextPageContext, {}, Props> = ({ children }: Pro
           <button onClick={() => signOut()}>Cerrar Sesión</button>
         </ul>
       </nav> */}
+
       {children}
     </>
   )
