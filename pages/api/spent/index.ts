@@ -12,6 +12,10 @@ export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
       return getSpents(req, res)
     case "POST":
       return newSpent(req, res)
+    case "DELETE":
+      return deleteSpent(req, res)
+    case "PUT":
+      return editSpent(req, res)
     default:
       return res.status(400).json({ message: "Bad request" })
   }
@@ -79,6 +83,92 @@ async function newSpent(req: NextApiRequest, res: NextApiResponse<Data>) {
     })
 
     return res.status(200).json(spent)
+  } catch (error) {
+    return res.status(500).json({ message: "error" })
+  }
+}
+
+async function deleteSpent(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const session = await unstable_getServerSession(req, res, authOptions)
+  if (!session) return res.status(401).json({ message: "Unauthorized" })
+
+  const { id } = req.body
+
+  try {
+    const spent = await prisma.spent.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!spent) return res.status(400).json({ message: "Bad request" })
+
+    await prisma.spent.delete({
+      where: {
+        id,
+      },
+    })
+
+    await prisma.budget.update({
+      where: {
+        id: spent.budgetId,
+      },
+      data: {
+        taken: {
+          decrement: spent.amount,
+        },
+      },
+    })
+
+    return res.status(200).json({ message: "Spent deleted" })
+  } catch (error) {
+    return res.status(500).json({ message: "error" })
+  }
+}
+
+async function editSpent(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const session = await unstable_getServerSession(req, res, authOptions)
+  if (!session) return res.status(401).json({ message: "Unauthorized" })
+
+  const { id, name, amount, category, budgetId, oldamount } = req.body
+
+  try {
+    await prisma.spent.update({
+      where: {
+        id,
+      },
+      data: {
+        name: name.replace(/\s+/g, " ").trim(),
+        amount: parseInt(amount),
+        category,
+      },
+    })
+
+    if (oldamount < amount) {
+      await prisma.budget.update({
+        where: {
+          id: budgetId,
+        },
+        data: {
+          taken: {
+            increment: parseInt(amount) - parseInt(oldamount),
+          },
+        },
+      })
+    } else {
+      await prisma.budget.update({
+        where: {
+          id: budgetId,
+        },
+        data: {
+          taken: {
+            decrement: parseInt(oldamount) - parseInt(amount),
+          },
+        },
+      })
+    }
+
+    return res.status(200).json({ message: "Spent edited" })
   } catch (error) {
     return res.status(500).json({ message: "error" })
   }
