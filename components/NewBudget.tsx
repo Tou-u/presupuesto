@@ -45,7 +45,15 @@ const NewBudget: NextComponentType<NextPageContext, {}, Props> = ({ mbudget }: P
   return (
     <Center mt={20}>
       <form onSubmit={handleSubmit}>
-        <Stack>
+        <Stack
+          borderWidth="1px"
+          borderRadius="lg"
+          bg="gray.900"
+          boxShadow={"2xl"}
+          padding={4}
+          px={{ base: 3, md: 10 }}
+          m={4}
+        >
           <Text textAlign="center" fontSize="2xl" mb={3}>
             Comienza añadiendo un presupuesto
           </Text>

@@ -13,27 +13,26 @@ const Home: NextPage = () => {
 
   return (
     <Header>
-      <Grid>
-        {lbudget ? (
-          <h1>Loading...</h1>
-        ) : budget?.length === 0 ? (
-          <GridItem w="100%">
-            <NewBudget mbudget={mbudget} />
+      {lbudget ? (
+        <h1>Loading...</h1>
+      ) : budget?.length === 0 ? (
+        <NewBudget mbudget={mbudget} /> //  //
+      ) : (
+        <Grid
+          templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(2, 1fr)" }}
+          m={2}
+          gap={2}
+        >
+          <GridItem w={{ base: "100%", "2xl": "80%" }} margin="0 auto">
+            <InfoCard budget={budget} mbudget={mbudget} mspent={mspent} />
           </GridItem>
-        ) : (
           <GridItem w="100%">
-            <Stack
-              justifyContent="space-around"
-              direction={{ base: "column", md: "row" }}
-            >
-              <InfoCard budget={budget} mbudget={mbudget} mspent={mspent} />
-              <Stack width={{ base: "100%", md: "60%" }}>
-                <InfoBills spent={spent} />
-              </Stack>
+            <Stack>
+              <InfoBills spent={spent} />
             </Stack>
           </GridItem>
-        )}
-      </Grid>
+        </Grid>
+      )}
     </Header>
   )
 }
