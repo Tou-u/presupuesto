@@ -28,7 +28,7 @@ const Home: NextPage = () => {
           </GridItem>
           <GridItem w="100%">
             <Stack>
-              <InfoBills spent={spent} />
+              <InfoBills spent={spent} mspent={mspent} mbudget={mbudget} />
             </Stack>
           </GridItem>
         </Grid>

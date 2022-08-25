@@ -1,13 +1,20 @@
 import type { NextComponentType, NextPageContext } from "next"
-import { Spent } from "@prisma/client"
-import { Center, Stack, Select, Text, Box, Container } from "@chakra-ui/react"
+import { Budget, Spent } from "@prisma/client"
+import { Center, Stack, Select, Text } from "@chakra-ui/react"
 import ListBills from "./ListBills"
+import { KeyedMutator } from "swr"
 
 interface Props {
   spent?: Spent[]
+  mspent: KeyedMutator<Spent[]>
+  mbudget: KeyedMutator<Budget[]>
 }
 
-const InfoBills: NextComponentType<NextPageContext, {}, Props> = ({ spent }: Props) => {
+const InfoBills: NextComponentType<NextPageContext, {}, Props> = ({
+  spent,
+  mspent,
+  mbudget,
+}: Props) => {
   return (
     <>
       {spent?.length! > 0 ? (
@@ -48,7 +55,7 @@ const InfoBills: NextComponentType<NextPageContext, {}, Props> = ({ spent }: Pro
           </Center>
           <Stack overflowY="auto" maxH="85vh">
             {spent?.map((spent) => (
-              <ListBills key={spent.id} spent={spent} />
+              <ListBills key={spent.id} spent={spent} mspent={mspent} mbudget={mbudget} />
             ))}
           </Stack>
         </>
