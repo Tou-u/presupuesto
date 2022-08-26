@@ -8,16 +8,22 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react"
-import { FormEvent, useRef, useState } from "react"
+import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react"
 import axios from "axios"
 import { KeyedMutator } from "swr"
 import { Budget } from "@prisma/client"
 
 interface Props {
   mbudget: KeyedMutator<Budget[]>
+  newbudget: boolean
+  setNewbudget: Dispatch<SetStateAction<boolean>>
 }
 
-const NewBudget: NextComponentType<NextPageContext, {}, Props> = ({ mbudget }: Props) => {
+const NewBudget: NextComponentType<NextPageContext, {}, Props> = ({
+  mbudget,
+  newbudget,
+  setNewbudget,
+}: Props) => {
   const [apierror, setApierror] = useState("")
   const [btnloading, setBtnloading] = useState(false)
   const amount = useRef<HTMLInputElement>(null)
@@ -37,9 +43,14 @@ const NewBudget: NextComponentType<NextPageContext, {}, Props> = ({ mbudget }: P
     })
 
     if (res.status === 200) {
-      await mbudget()
+      mbudget()
       setBtnloading(false)
+      setNewbudget(false)
     }
+  }
+
+  const cancelNewBudget = () => {
+    setNewbudget(false)
   }
 
   return (
@@ -78,6 +89,11 @@ const NewBudget: NextComponentType<NextPageContext, {}, Props> = ({ mbudget }: P
             {apierror}
           </Text>
         </Stack>
+        {newbudget && (
+          <Button onClick={cancelNewBudget} m={4}>
+            Cancelar
+          </Button>
+        )}
       </form>
     </Center>
   )
