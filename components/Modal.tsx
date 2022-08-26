@@ -15,7 +15,6 @@ import {
   ModalFooter,
   Button,
   Text,
-  Center,
 } from "@chakra-ui/react"
 import { Budget, Spent } from "@prisma/client"
 import axios from "axios"
